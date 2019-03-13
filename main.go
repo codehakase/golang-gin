@@ -44,6 +44,10 @@ type LOGIN struct {
 	PASSWORD string `json:"password" binding:"required"`
 }
 
+type JWTtoken struct {
+	TOKEN string `json:"token" binding:"required"`
+}
+
 /** we'll create a list of jokes */
 var jokes = []Joke{
 	Joke{1, 0, "Did you hear about the restaurant on the moon? Great food, no atmosphere."},
@@ -128,6 +132,12 @@ func auth(c *gin.Context) {
 	}
 
 	fmt.Println("user : " + login.USER + " / " + "pw : " + login.PASSWORD + "/" + "token string:" + tokenString)
+
+	var jwtToken JWTtoken
+	jwtToken = JWTtoken{tokenString}
+
+	c.Header("Content-Type", "application/json")
+	c.JSON(http.StatusOK, jwtToken)
 }
 
 func getPemCert(token *jwt.Token) (string, error) {
