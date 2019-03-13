@@ -38,6 +38,11 @@ type Joke struct {
 	Joke  string `json:"joke" binding:"required"`
 }
 
+type LOGIN struct {
+	USER     string `json:"user" binding:"required"`
+	PASSWORD string `json:"password" binding:"required"`
+}
+
 /** we'll create a list of jokes */
 var jokes = []Joke{
 	Joke{1, 0, "Did you hear about the restaurant on the moon? Great food, no atmosphere."},
@@ -98,9 +103,18 @@ func main() {
 		})
 		api.GET("/jokes", authMiddleware(), JokeHandler)
 		api.POST("/jokes/like/:jokeID", authMiddleware(), LikeJoke)
+		api.POST("/auth", auth)
 	}
 	// Start the app
 	router.Run(":3000")
+}
+
+func auth(c *gin.Context) {
+
+	var login LOGIN
+	c.BindJSON(&login)
+
+	fmt.Println("user : " + login.USER + " / " + "pw : " + login.PASSWORD)
 }
 
 func getPemCert(token *jwt.Token) (string, error) {
@@ -155,6 +169,7 @@ func JokeHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, jokes)
 }
 
+// LikeJoke ...
 func LikeJoke(c *gin.Context) {
 	// Check joke ID is valid
 	if jokeid, err := strconv.Atoi(c.Param("jokeID")); err == nil {
