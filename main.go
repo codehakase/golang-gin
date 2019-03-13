@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"time"
 
 	jwtmiddleware "github.com/auth0/go-jwt-middleware"
 	jwt "github.com/dgrijalva/jwt-go"
@@ -114,7 +115,19 @@ func auth(c *gin.Context) {
 	var login LOGIN
 	c.BindJSON(&login)
 
-	fmt.Println("user : " + login.USER + " / " + "pw : " + login.PASSWORD)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user":      login.USER,
+		"timestamp": int32(time.Now().Unix()),
+	})
+
+	// Sign and get the complete encoded token as a string using the secret.
+	tokenString, err := token.SignedString([]byte(login.PASSWORD))
+
+	if err != nil {
+		log.Fatal("Faile to generate signed string.")
+	}
+
+	fmt.Println("user : " + login.USER + " / " + "pw : " + login.PASSWORD + "/" + "token string:" + tokenString)
 }
 
 func getPemCert(token *jwt.Token) (string, error) {
