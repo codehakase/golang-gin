@@ -66,6 +66,10 @@ var jokes = []Joke{
 
 var jwtMiddleWare *jwtmiddleware.JWTMiddleware
 
+// Predefined ID and password.
+var authID = "admin"
+var authPassword = "14123123"
+
 func main() {
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
@@ -172,16 +176,50 @@ func getPemCert(token *jwt.Token) (string, error) {
 // authMiddleware intercepts the requests, and check for a valid jwt token
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Get the client secret key
-		err := jwtMiddleWare.CheckJWT(c.Writer, c.Request)
-		if err != nil {
-			// Token not found
+
+		var header = c.Request.Header.Get("Authorization")
+
+		fmt.Println("auth : " + header)
+
+		var tokenString = header[7:]
+
+		// Parse takes the token string and a function for looking up the key. The latter is especially
+		// useful if you use multiple keys for your application.  The standard is to use 'kid' in the
+		// head of the token to identify which key to use, but the parsed token (head and claims) is provided
+		// to the callback, providing flexibility.
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			// Don't forget to validate the alg is what you expect:
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+			}
+
+			// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+			return []byte(authPassword), nil
+		})
+
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			fmt.Println(claims["user"], claims["timestamp"])
+		} else {
 			fmt.Println(err)
 			c.Abort()
 			c.Writer.WriteHeader(http.StatusUnauthorized)
 			c.Writer.Write([]byte("Unauthorized"))
 			return
 		}
+
+		//
+		// Get the client secret key
+		/*
+			err := jwtMiddleWare.CheckJWT(c.Writer, c.Request)
+			if err != nil {
+				// Token not found
+				fmt.Println(err)
+				c.Abort()
+				c.Writer.WriteHeader(http.StatusUnauthorized)
+				c.Writer.Write([]byte("Unauthorized"))
+				return
+			}
+		*/
 	}
 }
 
