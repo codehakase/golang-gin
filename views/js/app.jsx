@@ -115,9 +115,18 @@ class Home extends React.Component {
         password: password,
       })
     })
-    .then( (resopnse) => resopnse.json() )
+    .then( (response) => {
+      if (response.status != 200) {
+        console.log('Looks like there was a problem. Status Code: ' +
+          response.status);
+        alert(response.status)
+        return null;
+      }
+      return response.json() })
     .then( (responseJson) => {
-      localStorage.setItem("access_token", responseJson.token);
+      if (responseJson != null) {
+        localStorage.setItem("access_token", responseJson.token);
+      }
       location.reload();
       return;
     } )
@@ -165,9 +174,7 @@ class LoggedIn extends React.Component {
   }
 
   logout() {
-    localStorage.removeItem("id_token");
     localStorage.removeItem("access_token");
-    localStorage.removeItem("profile");
     location.reload();
   }
 

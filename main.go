@@ -123,6 +123,18 @@ func auth(c *gin.Context) {
 	var login LOGIN
 	c.BindJSON(&login)
 
+	// To-Do: Check ID and password is right or not.
+	if authID != login.ID {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusBadRequest, "")
+		return
+	}
+	if authPassword != login.PASSWORD {
+		c.Header("Content-Type", "application/json")
+		c.JSON(http.StatusBadRequest, "")
+		return
+	}
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user":      login.ID,
 		"timestamp": int32(time.Now().Unix()),
