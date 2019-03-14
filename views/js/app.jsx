@@ -42,7 +42,7 @@ class App extends React.Component {
       }
     });
     */
-  }
+  }ww
 
   setup() {
     $.ajaxSetup({
@@ -58,7 +58,7 @@ class App extends React.Component {
   }
 
   setState() {
-    let idToken = localStorage.getItem("id_token");
+    let idToken = localStorage.getItem("access_token");
     if (idToken) {
       this.loggedIn = true;
     } else {
@@ -118,6 +118,7 @@ class Home extends React.Component {
     .then( (resopnse) => resopnse.json() )
     .then( (responseJson) => {
       localStorage.setItem("access_token", responseJson.token);
+      location.reload();
       return;
     } )
   }
