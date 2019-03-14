@@ -40,7 +40,7 @@ type Joke struct {
 }
 
 type LOGIN struct {
-	USER     string `json:"user" binding:"required"`
+	ID       string `json:"id" binding:"required"`
 	PASSWORD string `json:"password" binding:"required"`
 }
 
@@ -124,7 +124,7 @@ func auth(c *gin.Context) {
 	c.BindJSON(&login)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user":      login.USER,
+		"user":      login.ID,
 		"timestamp": int32(time.Now().Unix()),
 	})
 
@@ -135,7 +135,7 @@ func auth(c *gin.Context) {
 		log.Fatal("Faile to generate signed string.")
 	}
 
-	fmt.Println("user : " + login.USER + " / " + "pw : " + login.PASSWORD + "/" + "token string:" + tokenString)
+	fmt.Println("user : " + login.ID + " / " + "pw : " + login.PASSWORD + "/" + "token string:" + tokenString)
 
 	var jwtToken JWTtoken
 	jwtToken = JWTtoken{tokenString}

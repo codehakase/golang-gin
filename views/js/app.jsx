@@ -101,17 +101,27 @@ class Home extends React.Component {
   }
 
   serverRequest() {
-    var inid = document.getElementById("id").value;
-    var inpass = document.getElementById("password").value;
+    var id = document.getElementById("id").value;
+    var password = document.getElementById("password").value;
 
-    $.post(
-        "http://localhost:3000/api/auth/",
-        res => {
-          console.log("res... ", res);
-        }
-    );
+    fetch('http://localhost:3000/api/auth/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: id,
+        password: password,
+      })
+    })
+    .then( (resopnse) => resopnse.json() )
+    .then( (responseJson) => {
+      localStorage.setItem("access_token", responseJson.token);
+      return;
+    } )
   }
-
+  
   render() {
     return (
       <div className="container">
