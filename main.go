@@ -64,6 +64,7 @@ func main() {
 			fmt.Println("AUTH0_API_AUDIENCE", aud)
 			claims := token.Claims.(jwt.MapClaims)
 			incoming, _ := claims["aud"].([]string)
+			fmt.Println("incoming", incoming)
 			for _, a := range incoming {
 				fmt.Println("aud", a)
 			}
