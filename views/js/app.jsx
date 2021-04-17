@@ -78,7 +78,7 @@ class Home extends React.Component {
       domain: AUTH0_DOMAIN,
       clientID: AUTH0_CLIENT_ID,
       scope: "openid profile",
-      //audience: AUTH0_API_AUDIENCE,
+      audience: AUTH0_API_AUDIENCE,
       responseType: "token id_token",
       redirectUri: AUTH0_CALLBACK_URL
     });
