@@ -60,14 +60,25 @@ func main() {
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 			fmt.Println(token.Claims.(jwt.MapClaims))
+			
 			aud := os.Getenv("AUTH0_API_AUDIENCE")
-			fmt.Println("AUTH0_API_AUDIENCE", aud)
-			claims := token.Claims.(jwt.MapClaims)
-			incoming, _ := claims["aud"].([]string)
-			fmt.Println("incoming", incoming)
-			for _, a := range incoming {
-				fmt.Println("aud", a)
+			claims, ok := token.Claims.(jwt.MapClaims)
+			if !ok {
+				return token, errors.New("invalid claims type")
 			}
+
+			if audienceList, ok := claims["aud"].([]interface{}); ok{
+				auds := make([]string, len(audienceList))
+				for _, aud := range(audienceList) {
+					audStr, ok := aud.(string)
+					if !ok {
+						return token, errors.New("invalid audience type")
+					}
+					auds = append(auds, audStr)
+				}
+				claims["aud"] = auds
+			}
+
 			checkAudience := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			if !checkAudience {
 				return token, errors.New("Invalid audience.")
