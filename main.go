@@ -59,13 +59,16 @@ var jwtMiddleWare *jwtmiddleware.JWTMiddleware
 func main() {
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			//aud := os.Getenv("AUTH0_API_AUDIENCE")
+			fmt.Println(token.Claims.(jwt.MapClaims))
+			aud := os.Getenv("AUTH0_API_AUDIENCE")
+			fmt.Println("AUTH0_API_AUDIENCE", aud)
 			//checkAudience := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
 			//if !checkAudience {
 				//return token, errors.New("Invalid audience.")
 			//}
 			// verify iss claim
 			iss := os.Getenv("AUTH0_DOMAIN")
+			fmt.Println("AUTH0_DOMAIN", iss)
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
 			if !checkIss {
 				return token, errors.New("Invalid issuer.")
