@@ -125,7 +125,7 @@ class LoggedIn extends React.Component {
   }
 
   serverRequest() {
-    $.get("http://localhost:3000/api/jokes", res => {
+    $.get("https://fierce-island-45869.herokuapp.com//api/jokes", res => {
       this.setState({
         jokes: res
       });
@@ -174,7 +174,7 @@ class Joke extends React.Component {
   }
   serverRequest(joke) {
     $.post(
-      "http://localhost:3000/api/jokes/like/" + joke.id,
+      "https://fierce-island-45869.herokuapp.com/api/jokes/like/" + joke.id,
       { like: 1 },
       res => {
         console.log("res... ", res);
