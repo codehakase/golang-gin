@@ -62,7 +62,9 @@ func main() {
 			fmt.Println(token.Claims.(jwt.MapClaims))
 			aud := os.Getenv("AUTH0_API_AUDIENCE")
 			fmt.Println("AUTH0_API_AUDIENCE", aud)
-			for _, a := range token.Claims.(jwt.MapClaims)["aud"].([]string) {
+			claims := token.Claims.(jwt.MapClaims)
+			incoming, _ := claims["aud"].([]string)
+			for _, a := range incoming {
 				fmt.Println("aud", a)
 			}
 			checkAudience := token.Claims.(jwt.MapClaims).VerifyAudience(aud, false)
