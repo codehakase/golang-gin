@@ -125,7 +125,7 @@ class LoggedIn extends React.Component {
   }
 
   serverRequest() {
-    $.get("https://fierce-island-45869.herokuapp.com//api/jokes", res => {
+    $.get("https://fierce-island-45869.herokuapp.com/api/jokes", res => {
       this.setState({
         jokes: res
       });
