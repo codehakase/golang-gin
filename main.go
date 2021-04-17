@@ -60,7 +60,7 @@ func main() {
 	jwtMiddleware := jwtmiddleware.New(jwtmiddleware.Options{
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 			fmt.Println(token.Claims.(jwt.MapClaims))
-			
+
 			aud := os.Getenv("AUTH0_API_AUDIENCE")
 			claims, ok := token.Claims.(jwt.MapClaims)
 			if !ok {
@@ -85,7 +85,6 @@ func main() {
 			}
 			// verify iss claim
 			iss := os.Getenv("AUTH0_DOMAIN")
-			fmt.Println("AUTH0_DOMAIN", iss)
 			checkIss := token.Claims.(jwt.MapClaims).VerifyIssuer(iss, false)
 			if !checkIss {
 				return token, errors.New("Invalid issuer.")
