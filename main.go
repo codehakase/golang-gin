@@ -100,7 +100,8 @@ func main() {
 		api.POST("/jokes/like/:jokeID", authMiddleware(), LikeJoke)
 	}
 	// Start the app
-	router.Run(":3000")
+	port := os.Getenv("PORT")
+	router.Run(fmt.Sprintf(":%s", port))
 }
 
 func getPemCert(token *jwt.Token) (string, error) {
